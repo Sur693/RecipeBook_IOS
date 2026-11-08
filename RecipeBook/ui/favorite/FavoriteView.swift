@@ -22,16 +22,21 @@ struct FavoriteView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .scaleEffect(2.0)
             } else {
-                ScrollView {
-                    LazyVStack {
-                        ForEach(viewModel.recipes) { recipe in
-                            RecipeItemView(
-                                recipe: recipe,
-                                onRecipeTap: { onRecipeTap($0) }
-                            )
+                if viewModel.recipes.isEmpty {
+                    Text("No favorites yet")
+                        .foregroundColor(.secondary)
+                } else {
+                    ScrollView {
+                        LazyVStack {
+                            ForEach(viewModel.recipes) { recipe in
+                                RecipeItemView(
+                                    recipe: recipe,
+                                    onRecipeTap: { onRecipeTap($0) }
+                                )
+                            }
                         }
+                        Spacer()
                     }
-                    Spacer()
                 }
             }
         }

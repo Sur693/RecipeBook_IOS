@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import Kingfisher
 
 struct DetailsView: View {
     
@@ -21,16 +22,14 @@ struct DetailsView: View {
             VStack(spacing: 0) { 
                 
                 ZStack(alignment: .topTrailing) {
-                    AsyncImage(url: URL(string: recipe.imageRes)) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        Color(.systemGray5)
-                    }
-                    .frame(height: 250)
-                    .frame(maxWidth: .infinity)
-                    
+                    KFImage(URL(string: recipe.imageRes))
+                        .placeholder {
+                            Color(.systemGray5)
+                        }
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 175)
+                        .frame(maxWidth: .infinity)
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
@@ -53,11 +52,11 @@ struct DetailsView: View {
                                     .foregroundStyle(.gray)
                                 
                             }
-                            ForEach(0..<recipe.ingredients.count, id: \.self) { index in
+                            ForEach(Array(zip(recipe.ingredients, recipe.measures).enumerated()), id: \.offset) { _, pair in
                                 HStack {
-                                    Text("\(recipe.ingredients[index])")
+                                    Text(pair.0)   // ингредиент
                                     Spacer()
-                                    Text("\(recipe.measures[index])")
+                                    Text(pair.1)   // мера
                                 }
                             }
                             
@@ -89,6 +88,19 @@ struct DetailsView: View {
                             .foregroundStyle(.black)
                     }
                 }
+            }
+        case .error:
+            VStack(spacing: 12) {
+                Text("Failed to load recipe")
+                Button("Try Again") {
+                    viewModel.loadRecipe()
+                }
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 28)
+                .padding(.vertical, 12)
+                .background(.black)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
     }

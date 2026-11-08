@@ -69,7 +69,7 @@ struct MealDataModel: Codable, Identifiable {
             strIngredient6, strIngredient7, strIngredient8, strIngredient9, strIngredient10,
             strIngredient11, strIngredient12, strIngredient13, strIngredient14, strIngredient15,
             strIngredient16, strIngredient17, strIngredient18, strIngredient19, strIngredient20
-        ].compactMap { $0 }.filter { !$0.isEmpty }
+        ].compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
     }
 
     var measures: [String] {
@@ -82,4 +82,3 @@ struct MealDataModel: Codable, Identifiable {
     }
 
 }
-

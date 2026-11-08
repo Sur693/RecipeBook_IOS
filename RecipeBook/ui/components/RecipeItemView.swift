@@ -6,6 +6,7 @@
 //  Created by Admin on 26.08.2026.
 //
 import SwiftUI
+import Kingfisher
 
 struct RecipeItemView: View {
     
@@ -59,15 +60,14 @@ struct RecipeItemView: View {
                 .background(Color.black.opacity(0.4))
         }
         .frame(height: 250)
-        .background(
-            AsyncImage(url: URL(string: recipe.imageRes)) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Color.gray
-            }
-        )
+        .background {
+            KFImage(URL(string: recipe.imageRes))
+                .placeholder {
+                    Color.gray
+                }
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        }
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .onTapGesture {
             onRecipeTap(recipe.id)

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24902" systemVersion="25F80" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="FavoriteRecipeEntity" representedClassName="FavoriteRecipeEntity" syncable="YES">
+        <attribute name="area" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="category" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="imageRes" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="ingredientsData" attributeType="Binary"/>
+        <attribute name="instructions" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="measuresData" attributeType="Binary"/>
+        <attribute name="quantity" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <attribute name="videoRes" attributeType="String" defaultValueString="&quot;&quot;"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+        <userInfo>
+            <entry key="key" value="value"/>
+        </userInfo>
+    </entity>
+</model>

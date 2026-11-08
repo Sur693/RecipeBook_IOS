@@ -68,6 +68,31 @@ struct HomeView: View {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .scaleEffect(2.0)
+            } else if viewModel.recipes.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "wifi.slash")
+                        .font(.system(size: 40))
+                        .foregroundStyle(.secondary)
+
+                    Text("No recipes found")
+                        .font(.system(size: 20, weight: .bold))
+
+                    Text("Check your internet connection and try again.")
+                        .font(.system(size: 16))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Button("Try Again") {
+                        viewModel.loadRandomRecipes()
+                    }
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 28)
+                    .padding(.vertical, 12)
+                    .background(.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
             } else {
                 ScrollView {
                     LazyVStack {

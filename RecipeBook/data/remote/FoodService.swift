@@ -7,7 +7,16 @@
 
 import Foundation
 
-class FoodService {
+protocol FoodServiceProtocol {
+    func getRandomMeal() async throws -> MealsResponse
+    func getRecipeById(id: String) async throws -> MealsResponse
+    func searchMealsByName(name: String) async throws -> MealsResponse
+    func filterByCategory(category: String) async throws -> MealsResponse
+    func filterByArea(area: String) async throws -> MealsResponse
+    func filterByIngredient(ingredient: String) async throws -> MealsResponse
+}
+
+class FoodService: FoodServiceProtocol {
     
     static let shared = FoodService() // companion object внутри класса, singleton
     private let baseURL = "https://www.themealdb.com/api/json/v1/1/"

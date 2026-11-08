@@ -11,6 +11,7 @@ internal import Combine
 enum RecipeDetailUiState {
     case loading
     case recipe (value: RecipeDetail, youtubeVideoId: String?)
+    case error
 }
 
 class DetailsViewModel: ObservableObject {
@@ -34,15 +35,28 @@ class DetailsViewModel: ObservableObject {
     }
     
     func toggleFavorite() {
-        repository.toggle(recipeId)
+        if case .recipe(let value, _) = state {
+            repository.toggle(value)
+        }
     }
     
-    private func loadRecipe() {
+    func loadRecipe() {
+        // Сначала ищем рецепт в локальной базе.
+        if let saved = repository.fetchDetail(id: recipeId) {
+            let videoId = getYoutubeId(from: saved.videoRes)
+            state = .recipe(value: saved,youtubeVideoId: videoId)
+            return
+        }
+
+        // Если рецепта нет в базе, загружаем его с сервера.
         Task {
             do {
                 let response = try await FoodService.shared.getRecipeById(id: recipeId)
                 
                 guard let meal = response.meals?.first else {
+                    await MainActor.run {
+                        self.state = .error
+                    }
                     return
                 }
                 
@@ -54,7 +68,7 @@ class DetailsViewModel: ObservableObject {
                 }
             } catch {
                 await MainActor.run {
-                    self.state = RecipeDetailUiState.loading
+                    self.state = .error
                 }
             }
         }

@@ -14,7 +14,10 @@ class HomeViewModel: ObservableObject {
     @Published var activeFilter: (FilterType, String)? = nil
     @Published var isLoading: Bool = false
     
-    init (){
+    private let foodService: FoodServiceProtocol
+
+    init(foodService: FoodServiceProtocol = FoodService.shared) {
+        self.foodService = foodService
         loadRandomRecipes()
     }
     
@@ -44,7 +47,7 @@ class HomeViewModel: ObservableObject {
             for _ in
                     0..<10 {
                 group.addTask {
-                    try await FoodService.shared.getRandomMeal()
+                    try await self.foodService.getRandomMeal()
                 }
             }
             var results: [MealsResponse] = []
@@ -62,7 +65,7 @@ class HomeViewModel: ObservableObject {
         activeFilter = nil
         Task {
             do {
-                let response = try await FoodService.shared.searchMealsByName(name: query)
+                let response = try await foodService.searchMealsByName(name: query)
                 let meals = response.meals ?? []
                 
                 let previews = meals.map { DataConverter.mealDataModelToPreview(model: $0) }
@@ -82,12 +85,13 @@ class HomeViewModel: ObservableObject {
     
     func searchByFilter(filterValue: String, filterType: FilterType) {
         isLoading = true
+        searchQuery = ""
          Task {
              do {
                  let response = switch (filterType) {
-                    case FilterType.area: try await FoodService.shared.filterByArea(area: filterValue)
-                    case FilterType.category: try await FoodService.shared.filterByCategory(category: filterValue)
-                    case FilterType.ingredient: try await FoodService.shared.filterByIngredient(ingredient: filterValue)
+                    case FilterType.area: try await foodService.filterByArea(area: filterValue)
+                    case FilterType.category: try await foodService.filterByCategory(category: filterValue)
+                 case FilterType.ingredient: try await foodService.filterByIngredient(ingredient: filterValue)
                  }
                  
                  let meals = response.meals ?? []
@@ -95,7 +99,7 @@ class HomeViewModel: ObservableObject {
                  var fetchedMeals: [MealDataModel] = []
                  
                  for meal in meals {
-                     if let response = try? await FoodService.shared.getRecipeById(id: meal.idMeal),
+                     if let response = try? await foodService.getRecipeById(id: meal.idMeal),
                         let fullMeal = response.meals?.first { // достаем первое (единственное) блюдо из ответа массива
                          fetchedMeals.append(fullMeal)
                      }

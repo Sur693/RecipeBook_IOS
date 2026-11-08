@@ -13,6 +13,32 @@ enum Route: Hashable {
     case filter
 }
 
+// Обертка для хранения DetailsViewModel.
+struct DetailsScreen: View {
+    @StateObject private var viewModel: DetailsViewModel
+    @ObservedObject var repository: FavoriteRepository
+
+    // Инициализация с id рецепта и репозиторием.
+    init(recipeId: String, repository: FavoriteRepository) {
+        self.repository = repository
+        _viewModel = StateObject(
+            wrappedValue: DetailsViewModel(
+                recipeId: recipeId,
+                repository: repository
+            )
+        )
+    }
+
+    // Передаем данные в экран деталей.
+    var body: some View {
+        DetailsView(
+            viewModel: viewModel,
+            repository: repository
+        )
+    }
+}
+
+
 struct ContentView: View {
     @StateObject var viewModel = HomeViewModel() // создаем единственный экзмепляр vm
     @StateObject var favoriteRepository = FavoriteRepository()
@@ -29,10 +55,10 @@ struct ContentView: View {
                 .navigationDestination(for: Route.self) { route in 
                     switch route {
                     case .detail(let recipeId):
-                        DetailsView(
-                            viewModel: DetailsViewModel(recipeId: recipeId, repository: favoriteRepository),
-                            repository: favoriteRepository
-                        )
+                        DetailsScreen(
+                                recipeId: recipeId,
+                                repository: favoriteRepository
+                            )
                     case .favorite:
                         FavoriteView(
                             viewModel: FavoriteViewModel(repository: favoriteRepository),
